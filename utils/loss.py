@@ -16,6 +16,7 @@ def smooth_BCE(eps=0.1):
 
 class BCEBlurWithLogitsLoss(nn.Module):
     """Modified BCEWithLogitsLoss to reduce missing label effects in YOLOv5 training with optional alpha smoothing."""
+
     # 修改的BCEWithLogitsLoss，用于减少YOLOv5训练中缺失标签的影响，支持可选的alpha平滑
 
     def __init__(self, alpha=0.05):
@@ -118,6 +119,7 @@ class QFocalLoss(nn.Module):
 
 class ComputeLoss:
     """Computes the total loss for YOLOv5 model predictions, including classification, box, and objectness losses."""
+
     # 计算YOLOv5模型预测的总损失，包括分类、边界框和目标性损失
 
     sort_obj_iou = False

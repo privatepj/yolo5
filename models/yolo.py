@@ -71,6 +71,7 @@ except ImportError:
 
 class Detect(nn.Module):
     """YOLOv5 Detect head for processing input tensors and generating detection outputs in object detection models."""
+
     # YOLOv5检测头，用于处理输入张量并生成目标检测输出
 
     stride = None  # strides computed during build
@@ -171,6 +172,7 @@ class Detect(nn.Module):
 
 class Segment(Detect):
     """YOLOv5 Segment head for segmentation models, extending Detect with mask and prototype layers."""
+
     # YOLOv5分割头，用于分割模型，扩展Detect类并添加掩码和原型层
 
     def __init__(self, nc=80, anchors=(), nm=32, npr=256, ch=(), inplace=True):
@@ -205,6 +207,7 @@ class Segment(Detect):
 
 class BaseModel(nn.Module):
     """YOLOv5 base model."""
+
     # YOLOv5基础模型
 
     def forward(self, x, profile=False, visualize=False):
