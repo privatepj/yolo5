@@ -136,6 +136,32 @@ def train(hyp, opt, device, callbacks):
         - Datasets: https://github.com/ultralytics/yolov5/tree/master/data
         - Tutorial: https://docs.ultralytics.com/yolov5/tutorials/train_custom_data
     """
+    # 使用指定的超参数、选项和设备在自定义数据集上训练YOLOv5模型，
+    # 管理数据集、模型架构、损失计算和优化器步骤
+    
+    # 参数说明:
+    # hyp (str | dict): 超参数YAML文件路径或超参数字典
+    # opt (argparse.Namespace): 包含训练选项的解析命令行参数
+    # device (torch.device): 训练设备，如'cuda'或'cpu'
+    # callbacks (Callbacks): 各种训练事件的回调函数
+    
+    # 返回值: None
+    
+    # 模型和数据集会自动从最新的YOLOv5发布版下载
+    
+    # 示例:
+    # 单GPU训练:
+    # $ python train.py --data coco128.yaml --weights yolov5s.pt --img 640  # 从预训练模型开始（推荐）
+    # $ python train.py --data coco128.yaml --weights '' --cfg yolov5s.yaml --img 640  # 从零开始
+    
+    # 多GPU DDP训练:
+    # $ python -m torch.distributed.run --nproc_per_node 4 --master_port 1 train.py --data coco128.yaml --weights
+    # yolov5s.pt --img 640 --device 0,1,2,3
+    
+    # 更多使用详情，请参考:
+    # - 模型: https://github.com/ultralytics/yolov5/tree/master/models
+    # - 数据集: https://github.com/ultralytics/yolov5/tree/master/data
+    # - 教程: https://docs.ultralytics.com/yolov5/tutorials/train_custom_data
     save_dir, epochs, batch_size, weights, single_cls, evolve, data, cfg, resume, noval, nosave, workers, freeze = (
         Path(opt.save_dir),
         opt.epochs,

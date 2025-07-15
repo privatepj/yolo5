@@ -1,0 +1,46 @@
+# YOLOv5 项目结构指南
+
+## 主要入口文件
+- [train.py](mdc:train.py) - 模型训练的主要脚本
+- [detect.py](mdc:detect.py) - 目标检测推理脚本
+- [val.py](mdc:val.py) - 模型验证脚本
+- [export.py](mdc:export.py) - 模型导出脚本
+
+## 核心目录结构
+- `models/` - 模型架构定义和配置文件
+  - [models/yolo.py](mdc:models/yolo.py) - YOLO模型核心实现
+  - [models/common.py](mdc:models/common.py) - 通用模型组件
+  - `models/hub/` - 预训练模型配置
+  - `models/segment/` - 分割模型配置
+
+- `utils/` - 工具函数和辅助模块
+  - [utils/general.py](mdc:utils/general.py) - 通用工具函数
+  - [utils/torch_utils.py](mdc:utils/torch_utils.py) - PyTorch相关工具
+  - [utils/dataloaders.py](mdc:utils/dataloaders.py) - 数据加载器
+  - [utils/loss.py](mdc:utils/loss.py) - 损失函数实现
+  - [utils/metrics.py](mdc:utils/metrics.py) - 评估指标
+
+- `data/` - 数据集配置和脚本
+  - [data/coco.yaml](mdc:data/coco.yaml) - COCO数据集配置
+  - [data/VOC.yaml](mdc:data/VOC.yaml) - VOC数据集配置
+  - `data/images/` - 示例图像
+  - `data/scripts/` - 数据集下载脚本
+
+- `segment/` - 图像分割相关脚本
+- `classify/` - 图像分类相关脚本
+
+## 配置文件
+- [requirements.txt](mdc:requirements.txt) - Python依赖包
+- [pyproject.toml](mdc:pyproject.toml) - 项目配置
+
+## 使用指南
+1. 训练模型：使用 `train.py` 脚本
+2. 推理检测：使用 `detect.py` 脚本
+3. 模型验证：使用 `val.py` 脚本
+4. 模型导出：使用 `export.py` 脚本
+
+所有脚本都支持命令行参数，使用 `--help` 查看详细选项。
+description:
+globs:
+alwaysApply: false
+---

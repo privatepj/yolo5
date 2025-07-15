@@ -10,31 +10,44 @@ from utils.torch_utils import de_parallel
 
 def smooth_BCE(eps=0.1):
     """Returns label smoothing BCE targets for reducing overfitting; pos: `1.0 - 0.5*eps`, neg: `0.5*eps`. For details see https://github.com/ultralytics/yolov3/issues/238#issuecomment-598028441."""
+    # 返回标签平滑的BCE目标，用于减少过拟合；正样本：`1.0 - 0.5*eps`，负样本：`0.5*eps`
     return 1.0 - 0.5 * eps, 0.5 * eps
 
 
 class BCEBlurWithLogitsLoss(nn.Module):
     """Modified BCEWithLogitsLoss to reduce missing label effects in YOLOv5 training with optional alpha smoothing."""
+    # 修改的BCEWithLogitsLoss，用于减少YOLOv5训练中缺失标签的影响，支持可选的alpha平滑
 
     def __init__(self, alpha=0.05):
         """Initializes a modified BCEWithLogitsLoss with reduced missing label effects, taking optional alpha smoothing
         parameter.
         """
+        # 初始化修改的BCEWithLogitsLoss，减少缺失标签影响，接受可选的alpha平滑参数
         super().__init__()
         self.loss_fcn = nn.BCEWithLogitsLoss(reduction="none")  # must be nn.BCEWithLogitsLoss()
+        # 必须是nn.BCEWithLogitsLoss()
         self.alpha = alpha
+        # alpha平滑参数
 
     def forward(self, pred, true):
         """Computes modified BCE loss for YOLOv5 with reduced missing label effects, taking pred and true tensors,
         returns mean loss.
         """
+        # 计算修改的BCE损失，减少缺失标签影响，接受预测和真实张量，返回平均损失
         loss = self.loss_fcn(pred, true)
+        # 计算基础BCE损失
         pred = torch.sigmoid(pred)  # prob from logits
+        # 从logits计算概率
         dx = pred - true  # reduce only missing label effects
+        # 减少缺失标签影响
         # dx = (pred - true).abs()  # reduce missing label and false label effects
+        # 减少缺失标签和错误标签影响
         alpha_factor = 1 - torch.exp((dx - 1) / (self.alpha + 1e-4))
+        # 计算alpha因子
         loss *= alpha_factor
+        # 应用alpha因子
         return loss.mean()
+        # 返回平均损失
 
 
 class FocalLoss(nn.Module):
@@ -105,36 +118,59 @@ class QFocalLoss(nn.Module):
 
 class ComputeLoss:
     """Computes the total loss for YOLOv5 model predictions, including classification, box, and objectness losses."""
+    # 计算YOLOv5模型预测的总损失，包括分类、边界框和目标性损失
 
     sort_obj_iou = False
+    # 是否对目标IoU排序
 
     # Compute losses
+    # 计算损失
     def __init__(self, model, autobalance=False):
         """Initializes ComputeLoss with model and autobalance option, autobalances losses if True."""
+        # 使用模型和自动平衡选项初始化ComputeLoss，如果为True则自动平衡损失
         device = next(model.parameters()).device  # get model device
+        # 获取模型设备
         h = model.hyp  # hyperparameters
+        # 超参数
 
         # Define criteria
+        # 定义损失函数
         BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h["cls_pw"]], device=device))
+        # 分类损失函数
         BCEobj = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h["obj_pw"]], device=device))
+        # 目标性损失函数
 
         # Class label smoothing https://arxiv.org/pdf/1902.04103.pdf eqn 3
+        # 类别标签平滑
         self.cp, self.cn = smooth_BCE(eps=h.get("label_smoothing", 0.0))  # positive, negative BCE targets
+        # 正样本和负样本的BCE目标
 
         # Focal loss
+        # 焦点损失
         g = h["fl_gamma"]  # focal loss gamma
+        # 焦点损失gamma参数
         if g > 0:
             BCEcls, BCEobj = FocalLoss(BCEcls, g), FocalLoss(BCEobj, g)
+            # 应用焦点损失
 
         m = de_parallel(model).model[-1]  # Detect() module
+        # 获取检测模块
         self.balance = {3: [4.0, 1.0, 0.4]}.get(m.nl, [4.0, 1.0, 0.25, 0.06, 0.02])  # P3-P7
+        # 损失平衡权重
         self.ssi = list(m.stride).index(16) if autobalance else 0  # stride 16 index
+        # 步长16的索引
         self.BCEcls, self.BCEobj, self.gr, self.hyp, self.autobalance = BCEcls, BCEobj, 1.0, h, autobalance
+        # 保存损失函数和参数
         self.na = m.na  # number of anchors
+        # 锚框数量
         self.nc = m.nc  # number of classes
+        # 类别数量
         self.nl = m.nl  # number of layers
+        # 层数量
         self.anchors = m.anchors
+        # 锚框
         self.device = device
+        # 设备
 
     def __call__(self, p, targets):  # predictions, targets
         """Performs forward pass, calculating class, box, and object loss for given predictions and targets."""

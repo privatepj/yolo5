@@ -1,0 +1,66 @@
+# YOLOv5 Python 编码标准
+
+## 代码风格
+- 遵循 PEP 8 编码规范
+- 使用 4 个空格缩进，不使用制表符
+- 行长度限制在 120 字符以内
+- 使用 snake_case 命名变量和函数
+- 使用 PascalCase 命名类
+
+## 导入规范
+```python
+# 标准库导入
+import os
+import sys
+from pathlib import Path
+
+# 第三方库导入
+import torch
+import numpy as np
+import cv2
+
+# 本地模块导入
+from models.yolo import Model
+from utils.general import LOGGER
+```
+
+## 函数和类文档
+- 所有公共函数和类必须有文档字符串
+- 使用 Google 风格的文档字符串
+- 包含参数类型注解
+
+```python
+def train(hyp, opt, device, callbacks):
+    """
+    训练 YOLOv5 模型
+    
+    Args:
+        hyp (dict): 超参数字典
+        opt (argparse.Namespace): 命令行参数
+        device (torch.device): 训练设备
+        callbacks (Callbacks): 回调函数
+    
+    Returns:
+        None
+    """
+```
+
+## 错误处理
+- 使用 try-except 块处理可能的异常
+- 提供有意义的错误信息
+- 记录错误日志
+
+## 性能优化
+- 使用 torch.no_grad() 进行推理
+- 适当使用 GPU 内存管理
+- 避免不必要的 CPU-GPU 数据传输
+
+## 日志记录
+- 使用 LOGGER 进行日志记录
+- 不同级别：DEBUG, INFO, WARNING, ERROR
+- 包含时间戳和上下文信息
+
+description:
+globs:
+alwaysApply: false
+---

@@ -69,34 +69,63 @@ from utils.torch_utils import select_device, smart_inference_mode
 @smart_inference_mode()
 def run(
     weights=ROOT / "yolov5s.pt",  # model path or triton URL
+    # 模型路径或triton URL
     source=ROOT / "data/images",  # file/dir/URL/glob/screen/0(webcam)
+    # 文件/目录/URL/通配符/屏幕/0(摄像头)
     data=ROOT / "data/coco128.yaml",  # dataset.yaml path
+    # 数据集yaml路径
     imgsz=(640, 640),  # inference size (height, width)
+    # 推理尺寸（高度，宽度）
     conf_thres=0.25,  # confidence threshold
+    # 置信度阈值
     iou_thres=0.45,  # NMS IOU threshold
+    # NMS IoU阈值
     max_det=1000,  # maximum detections per image
+    # 每张图像最大检测数量
     device="",  # cuda device, i.e. 0 or 0,1,2,3 or cpu
+    # CUDA设备，如0或0,1,2,3或cpu
     view_img=False,  # show results
+    # 显示结果
     save_txt=False,  # save results to *.txt
+    # 保存结果到*.txt文件
     save_format=0,  # save boxes coordinates in YOLO format or Pascal-VOC format (0 for YOLO and 1 for Pascal-VOC)
+    # 保存边界框坐标的格式，YOLO格式或Pascal-VOC格式（0为YOLO，1为Pascal-VOC）
     save_csv=False,  # save results in CSV format
+    # 保存结果为CSV格式
     save_conf=False,  # save confidences in --save-txt labels
+    # 在--save-txt标签中保存置信度
     save_crop=False,  # save cropped prediction boxes
+    # 保存裁剪的预测框
     nosave=False,  # do not save images/videos
+    # 不保存图像/视频
     classes=None,  # filter by class: --class 0, or --class 0 2 3
+    # 按类别过滤：--class 0，或--class 0 2 3
     agnostic_nms=False,  # class-agnostic NMS
+    # 类别无关的NMS
     augment=False,  # augmented inference
+    # 增强推理
     visualize=False,  # visualize features
+    # 可视化特征
     update=False,  # update all models
+    # 更新所有模型
     project=ROOT / "runs/detect",  # save results to project/name
+    # 保存结果到project/name
     name="exp",  # save results to project/name
+    # 保存结果到project/name
     exist_ok=False,  # existing project/name ok, do not increment
+    # 现有project/name可以，不递增
     line_thickness=3,  # bounding box thickness (pixels)
+    # 边界框厚度（像素）
     hide_labels=False,  # hide labels
+    # 隐藏标签
     hide_conf=False,  # hide confidences
+    # 隐藏置信度
     half=False,  # use FP16 half-precision inference
+    # 使用FP16半精度推理
     dnn=False,  # use OpenCV DNN for ONNX inference
+    # 使用OpenCV DNN进行ONNX推理
     vid_stride=1,  # video frame-rate stride
+    # 视频帧率步长
 ):
     """
     Runs YOLOv5 detection inference on various sources like images, videos, directories, streams, etc.
